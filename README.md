@@ -1,4 +1,4 @@
-# The producer-consumer problem: A solution using locks and condition variables
+# The producer-consumer problem: A solution using locks in Python
 
 ## About
 
