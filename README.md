@@ -20,13 +20,12 @@ This solution to the problem consists in implementing the insertion and removal 
 Source code in this repository is organized as follows:
 
 ```
-+─py-producerconsumer-lock            ---> Project directory
-  ├─── doc                            ---> Directory with HTML pages resulted from generated documentation
-  └─── src                            ---> Directory with source code files
-       └─── buffer.py                 ---> Implementation of the shared buffer and the synchronized operations on it
-       └─── consumer.py               ---> Implementation of the consumer thread
-       └─── main.py                   ---> Main program
-       └─── producer.py               ---> Implementation of the producer thread
+py-producerconsumer-lock              ---> Project directory
+  ├─── main.py                         ---> Program entry point
+  └─── src                             ---> Source modules
+       ├─── buffer.py                  ---> Shared buffer and synchronization operations
+       ├─── consumer.py                ---> Consumer thread
+       └─── producer.py                ---> Producer thread
     
 ```
 
@@ -53,7 +52,7 @@ In the operating system’s terminal, insert the following commands to download 
 To run the program, insert the following command in the operating system's terminal:
 
 ```bash
-python3 src/main.py
+python3 main.py
 ```
 
 ## Automatic generation
@@ -61,13 +60,13 @@ python3 src/main.py
 The generation and visualization of documentation is provided by [pdoc](https://pdoc.dev). To render documentation as HTML pages, insert the following command in the operating system's terminal:
 
 ```bash
-pdoc ./src -o ./doc
+pdoc main.py ./src -o ./doc
 ```
 
-This will generate the documentation for all source code files within [`src`](src) into the [`doc`](doc) directory. It is also possible to render documentation live with the command
+This generates HTML documentation for the entry point and all source modules into the `doc` directory. To render documentation live, run:
 
 ```bash
-pdoc ./src
+pdoc main.py ./src
 ```
 
-This command will result in opening a window in the browser running `pdoc` at a localhost server. In this case, the documentation pages will be automatically reloaded upon changes in the source code.
+The live server opens the documentation in a browser and reloads pages when source files change.
