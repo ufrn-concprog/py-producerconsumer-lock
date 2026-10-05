@@ -1,72 +1,60 @@
-# The producer-consumer problem: A solution using locks and condition variables
+# The Producer-Consumer Problem: A Solution in Python using Locks and Condition Variables
 
-## About
+This project implements a solution to the well-known [producer-consumer](https://en.wikipedia.org/wiki/Producer–consumer_problem) problem using a lock object and condition variables for synchronization. Condition variables enable condition-based synchronization: threads can be suspended or notified to resume execution under certain conditions.
 
-This project implements a solution to the well-known [producer-consumer](https://en.wikipedia.org/wiki/Producer–consumer_problem) problem using a lock object and condition variables for synchronization. The condition variables allows for condition-based synchronization: threads can be suspended or notified for resuming execution under certain conditions.
+## 📝 The Producer-Consumer Problem
 
-## The producer-consumer problem
+The producer-consumer problem uses a bounded buffer shared by producers and consumers. Producers add values to the buffer, and consumers remove them. The implementation must ensure that:
 
-The producer-consumer problem refers to a data area (a bounded buffer) shared by two types of processes, producers and consumers. Producers generate and insert new elements into the shared buffer while consumers remove and consume elements from the shared buffer. The following constraints must be also satisfied:
+* Only one thread accesses the buffer for an insertion or removal at a time.
+* Producers wait while the buffer is full.
+* Consumers wait while the buffer is empty.
+* Values are removed in the order they were inserted.
 
-* Only one operation (insertion or removal of elements into/from the buffer) can be performed at a time
-* Producers cannot insert new elements when the buffer is full: they must be suspended
-* Consumers cannot remove elements when the buffer is empty: they must be suspended
-* Elements must be removed in the same order at which they were inserted
+This solution implements the insertion and removal operations as statements controlled by a lock object. The thread attempts to acquire the lock before executing those statements. If the lock is granted (i.e., no other thread holds it in mutual exclusion), the thread executes the statements and releases the lock at the end. If the buffer is full, producer threads should be suspended. If it is possible to add a new element to the buffer, then a suspended consumer thread should eventually be notified to resume execution. Conversely, when the buffer is empty, consumer threads should be suspended. If an element can be removed from the buffer, then a suspended producer thread should be notified to resume execution. These conditions for suspending threads or notifying them for execution are controlled via condition variables associated with the mutual exclusion lock.
 
-This solution to the problem consists in implementing the insertion and removal operations as synchronized methods, thereby ensuring their execution under mutual exclusion. While the current size of the buffer is equal to the established capacity, producer threads should be suspended. If it is possible to add a new element to the buffer, then a consumer thread eventually suspended should be notified to resume execution. On the other hand, while the current size of the buffer is equal to zero, consumer threads should be suspended. If it is possible to remove an element from the buffer, then a producer thread eventually suspended should be notified to resume execution.
-
-## Repository structure
+## 📂 Repository Structure
 
 Source code in this repository is organized as follows:
 
-```
-py-producerconsumer-lock              ---> Project directory
-  ├─── main.py                         ---> Program entry point
-  └─── src                             ---> Source modules
-       ├─── buffer.py                  ---> Shared buffer and synchronization operations
-       ├─── consumer.py                ---> Consumer thread
-       └─── producer.py                ---> Producer thread
+```text
++─py-producerconsumer
+  ├─── doc                  # Directory where documentation will be generated
+  ├─── src                  # Directory with header files
+       └─── buffer.py       # Implementation of the shared buffer
+       └─── consumer.py     # Implementation of the consumer thread
+       └─── producer.py     # Implementation of the producer thread
+  └─── main.py              # Main program
     
 ```
 
-## Requirements
+## 🚀 Getting Started
 
-For compiling and executing the program, the following elements must be properly installed on the development environment:
+### ✅ Prerequisites
 
-* [Git](https://git-scm.com), as control version system
-* [Python 3+](https://www.python.org)
-* [pdoc](https://pdoc.dev), for automatic documentation generation
+Python 3 is required. The program uses only the Python standard library.
 
-## Download, compilation, and execution
+### ▶️ Running
 
-In the operating system’s terminal, insert the following commands to download the implementation from this Git repository and navigate to the resulting directory:
-
-```bash
- # Download from the Git repository
- git clone https://github.com/ufrn-concprog/py-producerconsumer
- 
- # Navigation to the directory
- cd py-producerconsumer
-```
-
-To run the program, insert the following command in the operating system's terminal:
+From the repository root:
 
 ```bash
 python3 main.py
 ```
 
-## Automatic generation
+The program prints messages as values are inserted into and removed from the buffer, followed by a completion message.
 
-The generation and visualization of documentation is provided by [pdoc](https://pdoc.dev). To render documentation as HTML pages, insert the following command in the operating system's terminal:
+## Generate Documentation
 
-```bash
-pdoc main.py ./src -o ./doc
-```
-
-This generates HTML documentation for the entry point and all source modules into the `doc` directory. To render documentation live, run:
+The source modules include docstrings that can be rendered with [pdoc](https://pdoc.dev). Install pdoc and generate HTML documentation from the repository root:
 
 ```bash
-pdoc main.py ./src
+python3 -m pip install pdoc
+python3 -m pdoc -o doc src.buffer src.consumer main src.producer
 ```
 
-The live server opens the documentation in a browser and reloads pages when source files change.
+To serve the documentation locally instead of writing HTML files:
+
+```bash
+python3 -m pdoc src.buffer src.consumer main src.producer
+```
